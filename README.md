@@ -1,131 +1,90 @@
-# mux
+<p align="center">
+  <img src="./assets/mux-logo.svg" alt="mux logo" width="500" />
+</p>
 
-`mux` is a Rust CLI to scaffold and manage C and C++ projects using CMake presets.
+<h1 align="center">mux</h1>
+<p align="center"><strong>Open-source project workflow CLI for C and C++ teams.</strong></p>
 
-It provides a cargo/bun-like workflow for native projects:
-- initialize project templates
-- build debug/release presets
-- run binaries
-- run tests
-- clean build outputs
+<p align="center">
+  <a href="https://github.com/DHANUSH-web/mux/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/DHANUSH-web/mux/ci.yml?branch=main&label=CI"></a>
+  <a href="https://github.com/DHANUSH-web/mux/releases"><img alt="Release" src="https://img.shields.io/github/v/release/DHANUSH-web/mux"></a>
+  <a href="https://github.com/DHANUSH-web/mux/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/DHANUSH-web/mux"></a>
+  <img alt="Language" src="https://img.shields.io/badge/language-Rust-orange">
+  <img alt="CMake" src="https://img.shields.io/badge/build-CMake-064F8C">
+  <img alt="Platforms" src="https://img.shields.io/badge/platforms-macOS%20%7C%20Linux%20%7C%20Windows-0ea5e9">
+</p>
 
-## Features
+`mux` gives C and C++ developers a Cargo-like command loop: scaffold, build, run, test, and clean with consistent CMake preset conventions.
 
-- C template with Unity test scaffold
-- C++ template with GoogleTest (gtest) scaffold
-- C dependency vendoring with `mux add <lib>` into `lib/` (C template only)
-- C dependency removal with `mux remove <lib>` and lock tracking in `mux.lock`
-- Cross-platform preset naming and output layout
-- Unified commands for build/run/test/clean
+## Why teams use mux
 
-## Install / Build
+- Faster onboarding for native projects with a standard layout and commands.
+- Clean build/test flow across debug and release without custom scripts.
+- C template with Unity tests ready out of the box.
+- C++ template with GoogleTest wired through `FetchContent`.
+- Dependency vendoring workflow for C via `mux add` and `mux remove`.
 
-From the `mux` project root:
+## Quick Start
 
 ```bash
+# Build mux
 cargo build
+
+# Create and enter a C project (default template)
+mux init hello_c
+cd hello_c
+
+# Build, run, test
+mux build
+mux run
+mux test
 ```
 
-Optional install:
+C++ project:
+
+```bash
+mux init hello_cpp --cpp
+cd hello_cpp
+mux build
+mux run
+mux test
+```
+
+## Install
+
+From repository root:
 
 ```bash
 cargo install --path .
+mux --version
 ```
 
-## CLI Commands
+Or run without global install:
 
 ```bash
-mux --help
+cargo run -- --help
 ```
 
-### Initialize
+## Command Surface
 
-Create C project (default):
-
-```bash
-mux init my_c_app
-# or explicit
-mux init my_c_app --lang c
+```text
+mux init <project-name> [--lang c|cpp] [--cpp]
+mux build [--release|--all]
+mux run [--release]
+mux test [--release|--all]
+mux clean [--release|--all]
+mux add <lib> [--target <cmake-target>]      # C template only
+mux remove <lib-name>                         # C template only
 ```
 
-Create C++ project with GoogleTest:
+Notes:
 
-```bash
-mux init my_cpp_app --lang cpp
-# shortcut
-mux init my_cpp_app --cpp
-```
+- `--all` and `--release` are mutually exclusive where both are supported.
+- `build`, `run`, `test`, and `clean` must run inside a mux-generated project.
 
-### Build
+## Templates
 
-```bash
-mux build
-mux build --release
-mux build --all
-```
-
-### Run
-
-```bash
-mux run
-mux run --release
-```
-
-### Test
-
-```bash
-mux test
-mux test --release
-mux test --all
-```
-
-### Clean
-
-```bash
-mux clean
-mux clean --release
-mux clean --all
-```
-
-### Add Dependency (C Template Only)
-
-```bash
-mux add <lib>
-```
-
-Supported `<lib>` formats:
-- local path: `mux add ../my_c_lib`
-- git url: `mux add https://github.com/user/repo.git`
-- GitHub shorthand:
-  - `mux add owner/repo`
-  - `mux add repo` (expanded to `https://github.com/repo/repo.git`)
-
-Optional target override:
-
-```bash
-mux add owner/repo --target actual_cmake_target
-```
-
-`mux add` behavior:
-- copies/clones dependency into `lib/<name>`
-- updates root `CMakeLists.txt` with a dependency block
-- links dependency to `main` and `test_main` when applicable
-- currently supported only for C projects (`src/main.c`)
-
-### Remove Dependency (C Template Only)
-
-```bash
-mux remove <lib-name>
-```
-
-`mux remove` behavior:
-- removes `lib/<lib-name>` when present
-- removes the corresponding mux-generated block from `CMakeLists.txt`
-- removes the entry from `mux.lock`
-
-## Generated Templates
-
-### C Template
+### C template
 
 ```text
 <project>/
@@ -137,14 +96,11 @@ mux remove <lib-name>
   lib/unity/unity.c
 ```
 
-Targets:
-- `main`
-- `test_main`
+- Targets: `main`, `test_main`
+- Test framework: Unity
+- Supports `mux add` and `mux remove`
 
-Test framework:
-- Unity
-
-### C++ Template
+### C++ template
 
 ```text
 <project>/
@@ -155,59 +111,93 @@ Test framework:
   lib/README.md
 ```
 
-Targets:
-- `main`
-- `test_main`
+- Targets: `main`, `test_main`
+- Test framework: GoogleTest via CMake `FetchContent`
+- `mux add` is intentionally not enabled yet
 
-Test framework:
-- GoogleTest via CMake `FetchContent`
+## C Dependency Management (C template only)
 
-## Build Output Layout
+Add dependency:
 
-Build artifacts are stored in:
-
-```text
-out/<platform>-<profile>
+```bash
+mux add <lib>
 ```
 
+Supported formats:
+
+- Local path: `mux add ../my_c_lib`
+- Git URL: `mux add https://github.com/user/repo.git`
+- GitHub shorthand: `mux add owner/repo`
+- Repository shorthand: `mux add repo` (expands to `https://github.com/repo/repo.git`)
+
+Optional target override:
+
+```bash
+mux add owner/repo --target actual_cmake_target
+```
+
+Remove dependency:
+
+```bash
+mux remove <lib-name>
+```
+
+`mux` updates vendored files under `lib/`, `CMakeLists.txt`, and tracks metadata in `mux.lock`.
+
+## Build and Output Conventions
+
+- `CMakePresets.json` version: 6
+- Presets: `unix-debug`, `unix-release`, `windows-debug`, `windows-release`
+- Build outputs: `out/<platform>-<profile>`
+
 Examples:
+
 - `out/unix-debug`
 - `out/unix-release`
 - `out/windows-debug`
 - `out/windows-release`
 
-## Prerequisites
+## Requirements
 
 - Rust toolchain
 - CMake 3.20+
 - C/C++ compiler toolchain
-- Internet access for first C++ configure/build (to download GoogleTest)
+- Internet access for first C++ configure/build (GoogleTest download)
 
-## Typical Workflow
+## Contributing
+
+Issues and pull requests are welcome.
+
+Read these first:
+
+- `CONTRIBUTING.md`
+- `CODE_OF_CONDUCT.md`
+- `SECURITY.md`
+
+For local validation after behavior/template changes:
 
 ```bash
-# C example
-mux init demo_c
-cd demo_c
-mux build
-mux run
-mux test
-
-# C++ example
-cd ..
-mux init demo_cpp --cpp
-cd demo_cpp
-mux build
-mux run
-mux test
+cargo fmt
+cargo check
 ```
 
-## Notes
+Then run smoke tests for:
 
-- `build/test/run/clean` must be executed inside a mux-generated project.
-- `--all` and `--release` are mutually exclusive on commands that accept both.
-- `mux add`/`mux remove` currently support only C templates.
-- `mux.lock` is a tab-separated lock file maintained by mux for vendored deps.
-- Additional agent context files:
-  - `AGENTS.md`
-  - `.codex/AGENT.md`
+- C flow: `init/build/run/test`
+- C++ flow: `init --cpp`, `build`, `test`
+- C add/remove flow: `add`, `remove`, `build`, `test`
+
+## Getting Help
+
+- Questions and usage help: open a GitHub issue with the `question` label.
+- Bugs: use the bug report template in `.github/ISSUE_TEMPLATE/bug_report.yml`.
+- Security issues: follow `SECURITY.md` and report privately.
+
+## Maintainer
+
+- Project owner: `@DHANUSH-web`
+- Repository: `https://github.com/DHANUSH-web/mux`
+
+## License
+
+This project is licensed under **GPL-3.0-only**. See `LICENSE`.
