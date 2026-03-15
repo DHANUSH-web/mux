@@ -1,0 +1,58 @@
+name: Bug report
+description: Report a reproducible problem in mux
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please provide enough detail to reproduce it.
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: One-line description of the issue
+      placeholder: mux test fails on windows-debug preset
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: mux version
+      description: Output from `mux --version` or commit SHA
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Exact commands and sequence
+      placeholder: |
+        1. mux init demo --cpp
+        2. cd demo
+        3. mux test
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Paste terminal output and errors
+      render: shell
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, compiler, CMake, Rust versions

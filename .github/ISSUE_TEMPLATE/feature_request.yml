@@ -1,0 +1,29 @@
+name: Feature request
+description: Propose an improvement to mux
+labels:
+  - enhancement
+body:
+  - type: input
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What developer pain are you trying to solve?
+      placeholder: Repeated manual setup for test targets
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the desired behavior and user workflow
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact and tradeoffs
+      description: Note behavior changes, compatibility concerns, and migration impact
