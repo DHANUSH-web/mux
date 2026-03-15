@@ -150,11 +150,13 @@ asset_path="${tmp_dir}/${asset}"
 archive_path="${tmp_dir}/${archive_asset}"
 install_source=""
 source_name=""
+checksum_path=""
 
 echo "Installing ${BINARY_NAME} ${tag} (${target})"
 if download_to "$asset_url" "$asset_path"; then
   install_source="$asset_path"
   source_name="$asset"
+  checksum_path="$asset_path"
   chmod +x "$install_source" || true
 else
   echo "Direct binary not found, trying archive ${archive_asset}"
@@ -164,6 +166,7 @@ else
   tar -xzf "$archive_path" -C "$extract_dir"
   install_source="${extract_dir}/${asset}"
   source_name="$archive_asset"
+  checksum_path="$archive_path"
   if [ ! -f "$install_source" ]; then
     echo "Could not find ${asset} in archive" >&2
     exit 1
@@ -177,9 +180,9 @@ if command -v sha256sum >/dev/null 2>&1 || command -v shasum >/dev/null 2>&1; th
     expected="$(grep "  ${source_name}$" "$checksums_path" | awk '{print $1}' | head -n1 || true)"
     if [ -n "$expected" ]; then
       if command -v sha256sum >/dev/null 2>&1; then
-        actual="$(sha256sum "$install_source" | awk '{print $1}')"
+        actual="$(sha256sum "$checksum_path" | awk '{print $1}')"
       else
-        actual="$(shasum -a 256 "$install_source" | awk '{print $1}')"
+        actual="$(shasum -a 256 "$checksum_path" | awk '{print $1}')"
       fi
       if [ "$actual" != "$expected" ]; then
         echo "Checksum verification failed for ${source_name}" >&2
