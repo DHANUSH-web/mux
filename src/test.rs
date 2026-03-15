@@ -8,7 +8,10 @@ use std::time::{SystemTime, UNIX_EPOCH};
 static CWD_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
 
 fn lock_cwd() -> std::sync::MutexGuard<'static, ()> {
-    CWD_LOCK.get_or_init(|| Mutex::new(())).lock().unwrap()
+    match CWD_LOCK.get_or_init(|| Mutex::new(())).lock() {
+        Ok(guard) => guard,
+        Err(poisoned) => poisoned.into_inner(),
+    }
 }
 
 fn unique_temp_dir(prefix: &str) -> PathBuf {
@@ -140,12 +143,23 @@ fn clean_outputs_modes() {
     fs::create_dir_all(&dir).unwrap();
     env::set_current_dir(&dir).unwrap();
 
-    fs::create_dir_all("out/unix-debug").unwrap();
-    fs::create_dir_all("out/unix-release").unwrap();
+    let debug_dir = if cfg!(windows) {
+        "out/windows-debug"
+    } else {
+        "out/unix-debug"
+    };
+    let release_dir = if cfg!(windows) {
+        "out/windows-release"
+    } else {
+        "out/unix-release"
+    };
+
+    fs::create_dir_all(debug_dir).unwrap();
+    fs::create_dir_all(release_dir).unwrap();
 
     utils::clean_outputs(false, false).unwrap();
-    assert!(!Path::new("out/unix-debug").exists());
-    assert!(Path::new("out/unix-release").exists());
+    assert!(!Path::new(debug_dir).exists());
+    assert!(Path::new(release_dir).exists());
 
     utils::clean_outputs(true, false).unwrap();
     assert!(!Path::new("out").exists());

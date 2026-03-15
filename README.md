@@ -59,11 +59,23 @@ cargo install --path .
 mux --version
 ```
 
+Prebuilt binaries:
+
+- Download latest assets: `https://github.com/DHANUSH-web/mux/releases/latest`
+
 Or run without global install:
 
 ```bash
 cargo run -- --help
 ```
+
+## CI/CD
+
+- CI: `.github/workflows/ci.yml`
+- Release: `.github/workflows/release.yml`
+- CI runs on pushes to `main` and pull requests, and validates format/check/tests plus C/C++ smoke flows.
+- Release builds Linux/macOS/Windows binaries and uploads them to GitHub Releases.
+- Trigger a release by pushing a version tag, for example: `v0.1.0`.
 
 ## Command Surface
 
