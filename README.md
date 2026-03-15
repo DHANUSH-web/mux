@@ -6,9 +6,9 @@
 <p align="center"><strong>Open-source project workflow CLI for C and C++ teams.</strong></p>
 
 <p align="center">
-  <a href="https://github.com/DHANUSH-web/mux/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/DHANUSH-web/mux/ci.yml?branch=main&label=CI"></a>
-  <a href="https://github.com/DHANUSH-web/mux/releases"><img alt="Release" src="https://img.shields.io/github/v/release/DHANUSH-web/mux"></a>
-  <a href="https://github.com/DHANUSH-web/mux/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/DHANUSH-web/mux"></a>
+  <a href="https://github.com/DHANUSH-web/mux/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/DHANUSH-web/mux/ci.yml?label=CI"></a>
+  <a href="https://github.com/DHANUSH-web/mux/tags"><img alt="Latest Tag" src="https://img.shields.io/github/v/tag/DHANUSH-web/mux?sort=semver&label=release"></a>
+  <a href="https://github.com/DHANUSH-web/mux/blob/main/LICENSE"><img alt="License: GPL-3.0-only" src="https://img.shields.io/badge/license-GPL--3.0--only-blue.svg"></a>
   <img alt="Language" src="https://img.shields.io/badge/language-Rust-orange">
   <img alt="CMake" src="https://img.shields.io/badge/build-CMake-064F8C">
   <img alt="Platforms" src="https://img.shields.io/badge/platforms-macOS%20%7C%20Linux%20%7C%20Windows-0ea5e9">
