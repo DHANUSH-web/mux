@@ -1,3 +1,2 @@
-# Set default code owners for all files.
-# Example:
-# * @your-org/mux-maintainers
+# Default code owner for all files
+* @DHANUSH-web

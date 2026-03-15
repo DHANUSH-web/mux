@@ -74,6 +74,22 @@ Persistent context for AI agents working on `mux`.
 5. Smoke test C add flow (`init --lang c`, `add`, `build`, `test`)
 6. Smoke test C remove flow (`remove`, `build`, `test`)
 
+## CI/CD Contract
+- CI workflow file: `.github/workflows/ci.yml`
+- Release workflow file: `.github/workflows/release.yml`
+- CI expectations:
+  - `cargo fmt --all -- --check`
+  - `cargo check --all-targets --locked`
+  - `cargo test --all-targets --locked`
+  - Ubuntu smoke coverage for C, C++, C add/remove flows
+- Release expectations:
+  - Triggered by version tags (`v*`)
+  - Builds release binaries for:
+    - `x86_64-unknown-linux-gnu`
+    - `x86_64-apple-darwin`
+    - `x86_64-pc-windows-msvc`
+  - Publishes zipped/tarred artifacts plus SHA256 checksums to GitHub Releases
+
 ## Change Hygiene
 - Keep command semantics stable unless explicitly requested.
 - If behavior changes, update in same change:
