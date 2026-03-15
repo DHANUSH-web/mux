@@ -48,16 +48,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist
-          cp "target/${{ matrix.target }}/release/mux" mux
-          tar -czf "dist/mux-${{ matrix.target }}.${{ matrix.ext }}" mux
+          cp "target/${{ matrix.target }}/release/mux" "dist/mux-${{ matrix.target }}"
+          tar -czf "dist/mux-${{ matrix.target }}.${{ matrix.ext }}" -C dist "mux-${{ matrix.target }}"
 
       - name: Package artifact (windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Path dist -Force | Out-Null
-          Copy-Item "target/${{ matrix.target }}/release/mux.exe" mux.exe
-          Compress-Archive -Path mux.exe -DestinationPath "dist/mux-${{ matrix.target }}.${{ matrix.ext }}" -Force
+          Copy-Item "target/${{ matrix.target }}/release/mux.exe" "dist/mux-${{ matrix.target }}.exe"
+          Compress-Archive -Path "dist/mux-${{ matrix.target }}.exe" -DestinationPath "dist/mux-${{ matrix.target }}.${{ matrix.ext }}" -Force
 
       - name: Upload artifact bundle
         uses: actions/upload-artifact@v4
