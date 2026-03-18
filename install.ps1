@@ -40,7 +40,7 @@ if ([string]::IsNullOrWhiteSpace($InstallDir)) {
     $InstallDir = Join-Path $env:ProgramFiles "mux\bin"
   }
   else {
-    $InstallDir = Join-Path $HOME "bin"
+    $InstallDir = Join-Path $HOME ".mux\bin"
   }
 }
 
