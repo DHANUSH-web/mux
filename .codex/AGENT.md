@@ -86,7 +86,9 @@ Persistent context for AI agents working on `mux`.
   - Triggered by version tags (`v*`)
   - Builds release binaries for:
     - `x86_64-unknown-linux-gnu`
+    - `aarch64-unknown-linux-gnu`
     - `x86_64-apple-darwin`
+    - `aarch64-apple-darwin`
     - `x86_64-pc-windows-msvc`
   - Publishes zipped/tarred artifacts plus SHA256 checksums to GitHub Releases
 
