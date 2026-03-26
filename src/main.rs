@@ -10,7 +10,7 @@ use utils::{Profile, ProjectKind};
 #[command(
     name = "mux",
     version,
-    about = "C project workflow tool powered by CMake presets"
+    about = "C/C++ project workflow tool powered by CMake presets"
 )]
 struct Cli {
     #[command(subcommand)]
