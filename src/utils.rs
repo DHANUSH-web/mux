@@ -676,7 +676,7 @@ const CMAKE_PRESETS: &str = r#"{
     {
       "name": "unix-debug",
       "displayName": "Unix Debug",
-      "generator": "Unix Makefiles",
+      "generator": "Ninja",
       "description": "Debug build preset for Linux/macOS",
       "binaryDir": "${sourceDir}/out/unix-debug",
       "cacheVariables": {
@@ -701,7 +701,7 @@ const CMAKE_PRESETS: &str = r#"{
     {
       "name": "unix-release",
       "displayName": "Unix Release",
-      "generator": "Unix Makefiles",
+      "generator": "Ninja",
       "description": "Release build preset for Linux/macOS",
       "binaryDir": "${sourceDir}/out/unix-release",
       "cacheVariables": {
@@ -726,7 +726,7 @@ const CMAKE_PRESETS: &str = r#"{
     {
       "name": "windows-debug",
       "displayName": "Windows Debug",
-      "generator": "MinGW Makefiles",
+      "generator": "Ninja",
       "description": "Debug build preset for Windows",
       "binaryDir": "${sourceDir}/out/windows-debug",
       "cacheVariables": {
@@ -741,7 +741,7 @@ const CMAKE_PRESETS: &str = r#"{
     {
       "name": "windows-release",
       "displayName": "Windows Release",
-      "generator": "MinGW Makefiles",
+      "generator": "Ninja",
       "description": "Release build preset for Windows",
       "binaryDir": "${sourceDir}/out/windows-release",
       "cacheVariables": {
