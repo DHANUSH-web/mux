@@ -558,9 +558,9 @@ pub fn clean_outputs(all: bool, release: bool) -> Result<()> {
     if all {
         if out.exists() {
             fs::remove_dir_all(out).context("failed to remove out directory")?;
-            println!("Removed out/");
+            println!("Cleaned all builds");
         } else {
-            println!("Nothing to clean: out/ does not exist");
+            println!("Nothing to clean: Project is clean");
         }
         return Ok(());
     }
