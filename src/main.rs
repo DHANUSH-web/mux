@@ -33,34 +33,34 @@ enum Commands {
     /// Configure and build the project
     Build {
         /// Build release preset
-        #[arg(long)]
+        #[arg(short, long)]
         release: bool,
         /// Build both debug and release presets
-        #[arg(long)]
+        #[arg(short, long)]
         all: bool,
     },
     /// Run the main executable
     Run {
         /// Run using release preset
-        #[arg(long)]
+        #[arg(short, long)]
         release: bool,
     },
     /// Build and run tests
     Test {
         /// Test with release preset
-        #[arg(long)]
+        #[arg(short, long)]
         release: bool,
         /// Test both debug and release presets
-        #[arg(long)]
+        #[arg(short, long)]
         all: bool,
     },
     /// Clean build output
     Clean {
         /// Remove all build artifacts (out directory)
-        #[arg(long)]
+        #[arg(short, long)]
         all: bool,
         /// Remove only release preset output for current platform
-        #[arg(long)]
+        #[arg(short, long)]
         release: bool,
     },
     /// Add a C dependency into lib/ and wire it to CMake
