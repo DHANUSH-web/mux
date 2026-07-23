@@ -596,6 +596,30 @@ fn run_command(program: &str, args: &[&str]) -> Result<()> {
     Ok(())
 }
 
+pub fn update_self() -> Result<()> {
+    let platform: &'static str = platform_prefix();
+
+    let mut cmd = if platform == "unix" {
+        let mut c = Command::new("sh");
+        c.args(["-c", "curl -fsSL https://themux.dev/install.sh | bash"]);
+        c
+    } else {
+        let mut c = Command::new("powershell");
+        c.args(["-Command", "irm https://themux.dev/install.ps1 | iex"]);
+        c
+    };
+
+    println!("Updating mux to latest version...");
+    let status = cmd
+        .status()
+        .with_context(|| "failed to run update command")?;
+
+    if !status.success() {
+        bail!("update command failed");
+    }
+    Ok(())
+}
+
 fn preset_name(profile: Profile) -> String {
     format!("{}-{}", platform_prefix(), profile_name(profile))
 }

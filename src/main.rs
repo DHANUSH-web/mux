@@ -82,6 +82,8 @@ enum Commands {
         /// Shell to generate completions for
         shell: Shell,
     },
+    /// Update self to latest version
+    Update,
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum, Eq, PartialEq)]
@@ -155,6 +157,10 @@ fn run() -> Result<()> {
             let mut cmd = Cli::command();
             let name = cmd.get_name().to_string();
             generate(shell, &mut cmd, name, &mut std::io::stdout());
+            Ok(())
+        }
+        Commands::Update { } => {
+            utils::update_self()?;
             Ok(())
         }
     }
