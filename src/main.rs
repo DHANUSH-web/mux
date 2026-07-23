@@ -3,7 +3,8 @@ mod test;
 mod utils;
 
 use anyhow::Result;
-use clap::{Parser, Subcommand, ValueEnum};
+use clap::{CommandFactory, Parser, Subcommand, ValueEnum};
+use clap_complete::{Shell, generate};
 use utils::{Profile, ProjectKind};
 
 #[derive(Parser, Debug)]
@@ -76,6 +77,11 @@ enum Commands {
         /// Dependency name (lib folder name)
         lib: String,
     },
+    /// Print a shell completion script to stdout
+    Completions {
+        /// Shell to generate completions for
+        shell: Shell,
+    },
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum, Eq, PartialEq)]
@@ -145,5 +151,11 @@ fn run() -> Result<()> {
         }
         Commands::Add { lib, target } => utils::add_dependency(&lib, target),
         Commands::Remove { lib } => utils::remove_dependency(&lib),
+        Commands::Completions { shell } => {
+            let mut cmd = Cli::command();
+            let name = cmd.get_name().to_string();
+            generate(shell, &mut cmd, name, &mut std::io::stdout());
+            Ok(())
+        }
     }
 }
