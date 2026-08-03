@@ -620,6 +620,30 @@ pub fn update_self() -> Result<()> {
     Ok(())
 }
 
+pub fn uninstall_self() -> Result<()> {
+    let exe_path = std::env::current_exe().context("failed to resolve current executable path")?;
+
+    if platform_prefix() == "unix" {
+        fs::remove_file(&exe_path)
+            .with_context(|| format!("failed to remove {}", exe_path.display()))?;
+        println!("Removed {}", exe_path.display());
+    } else {
+        // Windows can't delete a running executable, so spawn a detached helper
+        // that waits for this process to exit before deleting the file.
+        let exe_path_str = exe_path.to_string_lossy().to_string();
+        Command::new("cmd")
+            .args([
+                "/C",
+                &format!("ping -n 2 127.0.0.1 >nul & del /F /Q \"{}\"", exe_path_str),
+            ])
+            .spawn()
+            .context("failed to spawn uninstall helper process")?;
+        println!("Removing {}...", exe_path.display());
+    }
+
+    Ok(())
+}
+
 fn preset_name(profile: Profile) -> String {
     format!("{}-{}", platform_prefix(), profile_name(profile))
 }

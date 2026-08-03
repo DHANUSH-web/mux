@@ -84,6 +84,8 @@ enum Commands {
     },
     /// Update self to latest version
     Update,
+    /// Uninstall self
+    Uninstall,
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum, Eq, PartialEq)]
@@ -161,6 +163,10 @@ fn run() -> Result<()> {
         }
         Commands::Update { } => {
             utils::update_self()?;
+            Ok(())
+        }
+        Commands::Uninstall { } => {
+            utils::uninstall_self()?;
             Ok(())
         }
     }
