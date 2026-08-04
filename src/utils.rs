@@ -558,9 +558,9 @@ pub fn clean_outputs(all: bool, release: bool) -> Result<()> {
     if all {
         if out.exists() {
             fs::remove_dir_all(out).context("failed to remove out directory")?;
-            println!("Removed out/");
+            println!("Cleaned all builds");
         } else {
-            println!("Nothing to clean: out/ does not exist");
+            println!("Nothing to clean: Project is clean");
         }
         return Ok(());
     }
@@ -593,6 +593,54 @@ fn run_command(program: &str, args: &[&str]) -> Result<()> {
     if !status.success() {
         bail!("command failed: {} {}", program, rendered_args);
     }
+    Ok(())
+}
+
+pub fn update_self() -> Result<()> {
+    let platform: &'static str = platform_prefix();
+
+    let mut cmd = if platform == "unix" {
+        let mut c = Command::new("sh");
+        c.args(["-c", "curl -fsSL https://themux.dev/install.sh | bash"]);
+        c
+    } else {
+        let mut c = Command::new("powershell");
+        c.args(["-Command", "irm https://themux.dev/install.ps1 | iex"]);
+        c
+    };
+
+    println!("Updating mux to latest version...");
+    let status = cmd
+        .status()
+        .with_context(|| "failed to run update command")?;
+
+    if !status.success() {
+        bail!("update command failed");
+    }
+    Ok(())
+}
+
+pub fn uninstall_self() -> Result<()> {
+    let exe_path = std::env::current_exe().context("failed to resolve current executable path")?;
+
+    if platform_prefix() == "unix" {
+        fs::remove_file(&exe_path)
+            .with_context(|| format!("failed to remove {}", exe_path.display()))?;
+        println!("Removed {}", exe_path.display());
+    } else {
+        // Windows can't delete a running executable, so spawn a detached helper
+        // that waits for this process to exit before deleting the file.
+        let exe_path_str = exe_path.to_string_lossy().to_string();
+        Command::new("cmd")
+            .args([
+                "/C",
+                &format!("ping -n 2 127.0.0.1 >nul & del /F /Q \"{}\"", exe_path_str),
+            ])
+            .spawn()
+            .context("failed to spawn uninstall helper process")?;
+        println!("Removing {}...", exe_path.display());
+    }
+
     Ok(())
 }
 

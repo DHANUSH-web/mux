@@ -3,7 +3,8 @@ mod test;
 mod utils;
 
 use anyhow::Result;
-use clap::{Parser, Subcommand, ValueEnum};
+use clap::{CommandFactory, Parser, Subcommand, ValueEnum};
+use clap_complete::{Shell, generate};
 use utils::{Profile, ProjectKind};
 
 #[derive(Parser, Debug)]
@@ -33,34 +34,34 @@ enum Commands {
     /// Configure and build the project
     Build {
         /// Build release preset
-        #[arg(long)]
+        #[arg(short, long)]
         release: bool,
         /// Build both debug and release presets
-        #[arg(long)]
+        #[arg(short, long)]
         all: bool,
     },
     /// Run the main executable
     Run {
         /// Run using release preset
-        #[arg(long)]
+        #[arg(short, long)]
         release: bool,
     },
     /// Build and run tests
     Test {
         /// Test with release preset
-        #[arg(long)]
+        #[arg(short, long)]
         release: bool,
         /// Test both debug and release presets
-        #[arg(long)]
+        #[arg(short, long)]
         all: bool,
     },
     /// Clean build output
     Clean {
         /// Remove all build artifacts (out directory)
-        #[arg(long)]
+        #[arg(short, long)]
         all: bool,
         /// Remove only release preset output for current platform
-        #[arg(long)]
+        #[arg(short, long)]
         release: bool,
     },
     /// Add a C dependency into lib/ and wire it to CMake
@@ -76,6 +77,15 @@ enum Commands {
         /// Dependency name (lib folder name)
         lib: String,
     },
+    /// Print a shell completion script to stdout
+    Completions {
+        /// Shell to generate completions for
+        shell: Shell,
+    },
+    /// Update self to latest version
+    Update,
+    /// Uninstall self
+    Uninstall,
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum, Eq, PartialEq)]
@@ -145,5 +155,19 @@ fn run() -> Result<()> {
         }
         Commands::Add { lib, target } => utils::add_dependency(&lib, target),
         Commands::Remove { lib } => utils::remove_dependency(&lib),
+        Commands::Completions { shell } => {
+            let mut cmd = Cli::command();
+            let name = cmd.get_name().to_string();
+            generate(shell, &mut cmd, name, &mut std::io::stdout());
+            Ok(())
+        }
+        Commands::Update {} => {
+            utils::update_self()?;
+            Ok(())
+        }
+        Commands::Uninstall {} => {
+            utils::uninstall_self()?;
+            Ok(())
+        }
     }
 }
