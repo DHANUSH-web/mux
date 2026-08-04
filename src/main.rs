@@ -161,11 +161,11 @@ fn run() -> Result<()> {
             generate(shell, &mut cmd, name, &mut std::io::stdout());
             Ok(())
         }
-        Commands::Update { } => {
+        Commands::Update {} => {
             utils::update_self()?;
             Ok(())
         }
-        Commands::Uninstall { } => {
+        Commands::Uninstall {} => {
             utils::uninstall_self()?;
             Ok(())
         }
